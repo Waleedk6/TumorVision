@@ -1,0 +1,5 @@
+com\tumorvision\model\Role.class
+com\tumorvision\model\User.class
+com\tumorvision\model\ERole.class
+com\tumorvision\repository\RoleRepository.class
+com\tumorvision\TumorVisionBackendApplication.class

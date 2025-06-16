@@ -17,7 +17,7 @@ const Landing = () => {
             animate={{ opacity: 1, y: 0 }}
             className="hero-content"
           >
-            <h1>Advanced Brain Tumor Detection</h1>
+            <h1>Advanced Brain Tumor Detection and</h1>
             <p className="subtitle">
               AI-powered diagnostic tool to assist medical professionals in detecting brain tumors from MRI scans with 99% accuracy
             </p>

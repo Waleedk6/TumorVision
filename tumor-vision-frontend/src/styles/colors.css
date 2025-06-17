@@ -1,5 +1,5 @@
 :root {
-  /* Primary */
+  /* Primary color*/
   --primary: #1a73e8;
   --primary-dark: #0d47a1;
   --primary-light: #e8f0fe;
@@ -10,7 +10,7 @@
   --error: #d32f2f;
   --warning: #f9ab00;
   
-  /* Backgrounds */
+  /* Backgrounds color*/
   --background: #f8f9fa;
   --surface: #ffffff;
   --surface-dark: #f1f3f4;

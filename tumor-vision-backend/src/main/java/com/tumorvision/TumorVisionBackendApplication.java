@@ -9,5 +9,4 @@ public class TumorVisionBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TumorVisionBackendApplication.class, args);
 	}
-
 }

@@ -1,5 +1,5 @@
 :root {
-  /* Primary Colors */
+  /* Primary */
   --primary: #1a73e8;
   --primary-dark: #0d47a1;
   --primary-light: #e8f0fe;
@@ -24,6 +24,7 @@
   --border: #dadce0;
   --border-light: #e8eaed;
   
+  /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.08);
   --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
   --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);

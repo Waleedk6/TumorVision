@@ -1,7 +1,6 @@
 import React from 'react';
 
 const Patients = () => {
-  // In a real app, this data would come from props/API
   const patients = []; // Empty array - will be populated dynamically
 
   return (

@@ -173,7 +173,7 @@
   /* CTA Section */
   .cta-section {
     padding: 6rem 0;
-    background: linear-gradient(135deg, #34a853 0%, #1e8e3e 100%);
+    background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%); 
     color: white;
     text-align: center;
   }

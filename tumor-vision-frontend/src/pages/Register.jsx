@@ -40,15 +40,6 @@ const Register = () => {
             />
           </div>
 
-          <div className="form-group">
-            <label>Medical License Number</label>
-            <input
-              type="text"
-              placeholder="Your professional license number"
-              required
-            />
-          </div>
-
           <div className="form-group checkbox-group">
             <label>
               <input type="checkbox" required /> I agree to the{' '}

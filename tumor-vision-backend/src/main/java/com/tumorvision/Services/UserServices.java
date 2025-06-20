@@ -32,15 +32,21 @@ public class UserServices {
     private final ConcurrentHashMap<String, Users> otpStore = new ConcurrentHashMap<>();
 
     /**
-     * 1) Register: check uniqueness, hash password, set PENDING status,
-     *    generate OTP, store in-memory, and email the OTP.
+     * 1) Register:
+     *    - check uniqueness,
+     *    - hash password,
+     *    - set PENDING status,
+     *    - generate OTP,
+     *    - store in-memory,
+     *    - email the OTP.
      */
     @Transactional
     public void saveUser(Users user) throws Exception {
-        // 1a) Check email uniqueness
+        // a) ensure email not already in use
         boolean exists = mongoTemplate.exists(
             org.springframework.data.mongodb.core.query.Query.query(
-                org.springframework.data.mongodb.core.query.Criteria.where("email").is(user.getEmail())
+                org.springframework.data.mongodb.core.query.Criteria.where("email")
+                                                                      .is(user.getEmail())
             ),
             Users.class
         );
@@ -48,76 +54,75 @@ public class UserServices {
             throw new Exception("Email already exists.");
         }
 
-        // 1b) Prepare user record
+        // b) prepare the transient user record
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Arrays.asList("USER"));
+        user.setRoles(Arrays.asList("PATIENT"));
         user.setStatus("PENDING");
         user.setVerificationToken(generateOTP());
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
 
-        // 1c) Store temporarily and send OTP
+        // c) hold in-memory until OTP is verified, then persist
         otpStore.put(user.getEmail(), user);
         sendVerificationEmail(user.getEmail(), user.getVerificationToken());
     }
 
     /**
-     * 2) Verify email + OTP → persist user with ACTIVE status.
+     * 2) Verify email & OTP → persist user with PASS status.
      */
     @Transactional
     public void verifyEmail(String email, String otp) throws Exception {
-        Users user = otpStore.get(email);
-        if (user == null || !user.getVerificationToken().equals(otp)) {
-            throw new Exception("Invalid verification token.");
+        Users pending = otpStore.get(email);
+        if (pending == null || !pending.getVerificationToken().equals(otp)) {
+            throw new Exception("Invalid or expired verification token.");
         }
 
-        // Persist and clear OTP store
+        // persist and clear the OTP-store
         otpStore.remove(email);
-        user.setStatus("ACTIVE");
-        user.setVerificationToken(null);
-        userRepository.save(user);
+        pending.setStatus("PASS");
+        pending.setVerificationToken(null);
+        userRepository.save(pending);
     }
 
     /**
-     * 3) Resend OTP if registration is still pending.
+     * 3) Resend OTP (only if still PENDING).
      */
     public void resendOtp(String email) throws Exception {
-        Users user = otpStore.get(email);
-        if (user == null) {
-            throw new Exception("No pending registration for that email.");
+        Users pending = otpStore.get(email);
+        if (pending == null) {
+            throw new Exception("No pending registration found for that email.");
         }
         String newOtp = generateOTP();
-        user.setVerificationToken(newOtp);
-        user.setUpdatedAt(LocalDateTime.now());
-        otpStore.put(email, user);
+        pending.setVerificationToken(newOtp);
+        pending.setUpdatedAt(LocalDateTime.now());
+        otpStore.put(email, pending);
         sendVerificationEmail(email, newOtp);
     }
 
     /**
-     * 4) Login: validate credentials and ensure status is ACTIVE.
-     *
-     * @return the authenticated Users object, or null if invalid.
+     * 4) Login: validate creds + require PASS status.
+     * @return the authenticated user, or null if invalid/never verified.
      */
     public Users validateUser(String email, String rawPassword) {
-        Users user = userRepository.findByEmail(email);
-        if (user != null
-         && passwordEncoder.matches(rawPassword, user.getPassword())
-         && "ACTIVE".equals(user.getStatus())) {
-            return user;
+        Users stored = userRepository.findByEmail(email);
+        if (stored != null
+         && passwordEncoder.matches(rawPassword, stored.getPassword())
+         && "PASS".equals(stored.getStatus())) {
+            return stored;
         }
         return null;
     }
 
     // ─── Helpers ────────────────────────────────────────────────────────────────
 
-    /** Generates a random 6-digit OTP. */
+    /** Random 6-digit OTP. */
     private String generateOTP() {
         SecureRandom rnd = new SecureRandom();
         int n = 100000 + rnd.nextInt(900000);
         return String.valueOf(n);
     }
 
-    /** Sends a simple verification email with the given OTP. */
+    /** Send the OTP in a simple mail. */
     private void sendVerificationEmail(String to, String otp) {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(to);

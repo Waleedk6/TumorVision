@@ -14,7 +14,7 @@ import com.tumorvision.Services.UserServices;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/auth")
+@RequestMapping("/user")
 public class PublicController {
 
     @Autowired

@@ -34,11 +34,11 @@ public class SpringSecurity {
                 .cors(Customizer.withDefaults()) // Enables global CORS settings
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/register/**").permitAll()
+                        .requestMatchers("/user/**").permitAll()
                         .requestMatchers("/images/**").permitAll()
                         .requestMatchers("/verify-email/**").permitAll()
-                        .requestMatchers("/users/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/doctor/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)

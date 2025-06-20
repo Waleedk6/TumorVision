@@ -5,6 +5,8 @@ import axios from "axios";
 axios.defaults.withCredentials = false;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
+
+
 // Base URLs for different endpoints
 const API_URL = "http://localhost:8080/register"; // Endpoints for register, login, verify, resend OTP
 const USER_API_URL = "http://localhost:8080/user";  // Endpoint for fetching user data

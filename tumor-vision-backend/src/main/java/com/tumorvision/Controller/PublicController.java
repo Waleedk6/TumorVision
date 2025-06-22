@@ -1,5 +1,6 @@
 package com.tumorvision.Controller;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.tumorvision.DAO.UserRepository;
 import com.tumorvision.Entity.Users;
@@ -22,24 +26,50 @@ public class PublicController {
 
     @Autowired
     private UserRepository userRepository;
+    
+    private static final Logger log = LoggerFactory.getLogger(PublicController.class);
+
 
     /** 
      * Signup step 1: save basic user info with PENDING status 
      * (you can send back a message or DTO as needed)
      */
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody Users user) {
-        try {
-            userServices.saveUser(user);  // second arg null since this is basic info only
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body("User registered. Please verify your email.");
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Registration failed: " + e.getMessage());
-        }
+@PostMapping("/register")
+public ResponseEntity<?> registerUser(@RequestBody Users user) {
+    try {
+        // Add detailed request logging
+        log.info("Registration request received for email: {}", user.getEmail());
+        log.debug("Full registration data - Username: {}, Email: {}, Password: [PROTECTED]", 
+            user.getUsername(), 
+            user.getEmail());
+        
+        // Log the complete user object (except password)
+        Users sanitizedUser = new Users();
+        sanitizedUser.setUsername(user.getUsername());
+        sanitizedUser.setEmail(user.getEmail());
+        sanitizedUser.setRoles(user.getRoles());
+        log.debug("User object details: {}", sanitizedUser);
+
+        userServices.saveUser(user);
+        
+        log.info("Registration successful for email: {}", user.getEmail());
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body("User registered. Please verify your email.");
+    } catch (Exception e) {
+        log.error("Registration failed for email: {}", user != null ? user.getEmail() : "unknown", e);
+        
+        // Return more structured error information
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("message", "Registration failed");
+        errorResponse.put("error", e.getMessage());
+        errorResponse.put("timestamp", Instant.now().toString());
+        
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorResponse);
     }
+}
 
     /**
      * Signup step 2: verify email via OTP

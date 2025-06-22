@@ -1,45 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { verifyEmail, resendOtp } from '../API/RegisterAPI';
 
 const EmailVerification = () => {
   const [status, setStatus] = useState('verifying');
   const [error, setError] = useState('');
-  const { token } = useParams();
+  const [otp, setOtp] = useState('');
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get('email');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const verifyToken = async () => {
-      try {
-        const response = await fetch('/api/verify-email', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          setStatus('success');
-          setTimeout(() => navigate('/login'), 3000);
-        } else {
-          setStatus('error');
-          setError(data.message || 'Verification failed');
-        }
-      } catch (err) {
-        setStatus('error');
-        setError('Network error. Please try again.');
+  const handleVerify = async () => {
+    try {
+      setStatus('verifying');
+      const response = await verifyEmail(email, otp);
+      if (response.data) {
+        setStatus('success');
+        setTimeout(() => navigate('/login'), 3000);
       }
-    };
-
-    if (token) {
-      verifyToken();
-    } else {
+    } catch (err) {
       setStatus('error');
-      setError('No verification token provided');
+      setError(err.response?.data || 'Verification failed. Please try again.');
     }
-  }, [token, navigate]);
+  };
+
+  const handleResend = async () => {
+    try {
+      await resendOtp(email);
+      alert('New verification code has been sent to your email.');
+    } catch (err) {
+      setError('Failed to resend code. Please try again.');
+    }
+  };
+
+  useEffect(() => {
+    if (!email) {
+      setStatus('error');
+      setError('No email provided for verification');
+    }
+  }, [email]);
 
   return (
     <div className="auth-page">
@@ -56,8 +55,27 @@ const EmailVerification = () => {
 
         {status === 'verifying' && (
           <div className="verification-status">
-            <div className="loading-spinner"></div>
-            <p>Please wait while we verify your email</p>
+            <div className="form-group">
+              <label>Enter Verification Code</label>
+              <input
+                type="text"
+                placeholder="Enter 6-digit code"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+              />
+            </div>
+            <button 
+              className="auth-button"
+              onClick={handleVerify}
+            >
+              Verify Email
+            </button>
+            <button 
+              className="auth-button secondary"
+              onClick={handleResend}
+            >
+              Resend Code
+            </button>
           </div>
         )}
 
@@ -77,15 +95,24 @@ const EmailVerification = () => {
             <div className="error-icon">✗</div>
             <p className="error-message">{error}</p>
             <div className="error-actions">
-              <button 
-                className="auth-button"
-                onClick={() => window.location.reload()}
-              >
-                Try Again
-              </button>
-              <Link to="/login" className="auth-button secondary">
-                Go to Login
-              </Link>
+              {email && (
+                <>
+                  <button 
+                    className="auth-button"
+                    onClick={handleResend}
+                  >
+                    Resend Code
+                  </button>
+                  <Link to="/login" className="auth-button secondary">
+                    Go to Login
+                  </Link>
+                </>
+              )}
+              {!email && (
+                <Link to="/register" className="auth-button">
+                  Register Again
+                </Link>
+              )}
             </div>
           </div>
         )}

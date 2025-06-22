@@ -14,6 +14,7 @@ public interface UserRepository extends MongoRepository<Users, ObjectId> {
     Users findByEmail(String email);
 
     /** Delete a user by their MongoDB ObjectId. */
+    @SuppressWarnings("null")
     @Override
     void deleteById(ObjectId id);
 
@@ -24,6 +25,7 @@ public interface UserRepository extends MongoRepository<Users, ObjectId> {
     Users findByVerificationToken(String token);
 
     /** Check existence by ObjectId. */
+    @SuppressWarnings("null")
     @Override
     boolean existsById(ObjectId id);
 }

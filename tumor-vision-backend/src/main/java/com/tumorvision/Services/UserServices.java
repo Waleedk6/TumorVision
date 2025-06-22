@@ -28,7 +28,7 @@ public class UserServices {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-private static final Logger log = LoggerFactory.getLogger(UserServices.class);
+    private static final Logger log = LoggerFactory.getLogger(UserServices.class);
 
     @Autowired
     private JavaMailSender mailSender;
@@ -130,13 +130,33 @@ private static final Logger log = LoggerFactory.getLogger(UserServices.class);
      * @return the authenticated user, or null if invalid/never verified.
      */
     public Users validateUser(String email, String rawPassword) {
+        log.debug("Attempting login for email: {}", email);
+
         Users stored = userRepository.findByEmail(email);
-        if (stored != null
-                && passwordEncoder.matches(rawPassword, stored.getPassword())
-                && "PASS".equals(stored.getStatus())) {
-            return stored;
+        if (stored == null) {
+            log.warn("No user found for email: {}", email);
+            return null;
         }
-        return null;
+
+        log.debug("Stored User Found: {}", stored.getEmail());
+        log.debug("Stored Hash: {}", stored.getPassword());
+        log.debug("Raw Password: {}", rawPassword);
+
+        boolean match = passwordEncoder.matches(rawPassword, stored.getPassword());
+        log.debug("Password match result: {}", match);
+
+        if (!match) {
+            log.warn("Password does not match for email: {}", email);
+            return null;
+        }
+
+        if (!"PASS".equals(stored.getStatus())) {
+            log.warn("User {} has status: {}", email, stored.getStatus());
+            return null;
+        }
+
+        log.info("User {} authenticated successfully", email);
+        return stored;
     }
 
     // ─── Helpers ────────────────────────────────────────────────────────────────

@@ -107,32 +107,58 @@ public class PublicController {
     /**
      * Login
      */
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody Users user) {
-        try {
-            Users found = userServices.validateUser(user.getEmail(), user.getPassword());
-            if (found == null) {
-                return ResponseEntity
-                        .status(HttpStatus.UNAUTHORIZED)
-                        .body(Map.of(
-                                "success", false,
-                                "message", "Invalid email or password"));
-            }
+@PostMapping("/login")
+public ResponseEntity<?> loginUser(@RequestBody Users user) {
+    Logger logger = LoggerFactory.getLogger(PublicController.class);
+    logger.info("Login attempt received for email: {}", user.getEmail());
 
-            // Ensure consistent response structure
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("user", found);
-            response.put("message", "Login successful");
-
-            return ResponseEntity.ok(response);
-
-        } catch (Exception e) {
+    try {
+        // Check if input is valid
+        if (user.getEmail() == null || user.getPassword() == null) {
+            logger.warn("Login failed - Missing email or password in request.");
             return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .badRequest()
                     .body(Map.of(
                             "success", false,
-                            "message", "Login failed: " + e.getMessage()));
+                            "message", "Email and password must be provided"));
         }
+
+        // Validate user
+        Users foundUser = userServices.validateUser(user.getEmail(), user.getPassword());
+
+        if (foundUser == null) {
+            logger.warn("Login failed - No matching user found or invalid credentials for email: {}", user.getEmail());
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Invalid email or password"));
+        }
+
+        logger.info("Login successful for user: {}", foundUser.getEmail());
+
+        // Build a clean response payload (avoid sending password)
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "Login successful");
+        response.put("user", Map.of(
+                "id", foundUser.getId(),
+                "email", foundUser.getEmail(),
+                "username", foundUser.getUsername(),
+                "roles", foundUser.getRoles(),
+                "status", foundUser.getStatus()
+        ));
+
+        return ResponseEntity.ok(response);
+
+    } catch (Exception e) {
+        logger.error("Unexpected error during login for email {}: {}", user.getEmail(), e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of(
+                        "success", false,
+                        "message", "Login failed due to server error. Please try again later."));
     }
+}
+
 }

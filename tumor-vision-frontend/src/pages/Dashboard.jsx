@@ -16,6 +16,8 @@ const Dashboard = () => {
           <p>Welcome back, Dr. Smith</p>
         </div>
 
+
+
         <nav className="sidebar-nav">
           <Link to="/dashboard/patients" className="nav-item">
             Patients

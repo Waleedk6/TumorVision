@@ -1,7 +1,45 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { loginUser } from '../API/RegisterAPI';
 
 const Login = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError('');
+
+  try {
+    const userData = await loginUser({
+      email: formData.email,
+      password: formData.password
+    });
+
+    console.log('Login successful, user data:', userData);
+    
+    // Redirect to dashboard or home page
+    navigate('/dashboard');
+    
+  } catch (err) {
+    console.error('Login error details:', err);
+    setError(err.message || 'Login failed. Please check your credentials.');
+  } finally {
+    setLoading(false);
+  }
+};
+
   return (
     <div className="auth-page">
       <div className="auth-container">
@@ -11,13 +49,18 @@ const Login = () => {
           <p>Please enter your credentials to access the dashboard</p>
         </div>
 
-        <form className="auth-form">
+        {error && <div className="error-message">{error}</div>}
+
+        <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Email Address</label>
             <input
               type="email"
+              name="email"
               placeholder="your@email.com"
               required
+              value={formData.email}
+              onChange={handleChange}
             />
           </div>
 
@@ -25,8 +68,11 @@ const Login = () => {
             <label>Password</label>
             <input
               type="password"
+              name="password"
               placeholder="••••••••"
               required
+              value={formData.password}
+              onChange={handleChange}
             />
             <div className="form-options">
               <label className="checkbox-label">
@@ -38,8 +84,12 @@ const Login = () => {
             </div>
           </div>
 
-          <button type="submit" className="auth-button">
-            Login
+          <button 
+            type="submit" 
+            className="auth-button"
+            disabled={loading}
+          >
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
 

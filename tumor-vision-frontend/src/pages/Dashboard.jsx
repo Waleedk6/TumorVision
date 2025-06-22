@@ -1,42 +1,115 @@
 import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import styles from './Dashboard.module.css';
+import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
+  const stats = [
+    { title: "Today's Scans", value: 8, icon: 'fas fa-calendar-day', color: 'primary' },
+    { title: 'Total Patients', value: 142, icon: 'fas fa-user-injured', color: 'success' },
+    { title: 'Positive Cases', value: 23, icon: 'fas fa-exclamation-triangle', color: 'danger' },
+    { title: 'Accuracy Rate', value: '96.7%', icon: 'fas fa-check-circle', color: 'info' },
+  ];
+
+  const scans = [
+    {
+      name: 'John Doe', age: 45, time: 'Today, 10:30 AM', result: 'Tumor Detected', confidence: 87,
+      badgeColor: 'danger', initials: 'JD', id: '#PT-1001'
+    },
+    {
+      name: 'Jane Smith', age: 32, time: 'Today, 09:15 AM', result: 'No Tumor', confidence: 92,
+      badgeColor: 'success', initials: 'JS', id: '#PT-1002'
+    },
+    {
+      name: 'Robert Brown', age: 58, time: 'Yesterday, 3:45 PM', result: 'Tumor Detected', confidence: 78,
+      badgeColor: 'danger', initials: 'RB', id: '#PT-1003'
+    }
+  ];
+
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="dashboard-layout"
-    >
-      {/* Sidebar */}
-      <div className="dashboard-sidebar">
-        <div className="sidebar-header">
-          <h2>TumorVision</h2>
-          <p>Welcome back, Dr. Smith</p>
+    <div className={styles.wrapper}>
+      <aside className={styles.sidebar}>
+        <nav className={styles.menu}>
+          <Link to="/dashboard" className={`${styles.link} ${styles.active}`}><i className="fas fa-tachometer-alt"></i> Dashboard</Link>
+          <Link to="/upload" className={styles.link}><i className="fas fa-upload"></i> Upload MRI</Link>
+          <Link to="/patients" className={styles.link}><i className="fas fa-users"></i> Patients</Link>
+          <Link to="/analytics" className={styles.link}><i className="fas fa-chart-bar"></i> Analytics</Link>
+          <Link to="/settings" className={styles.link}><i className="fas fa-cog"></i> Settings</Link>
+          <Link to="/" className={styles.link}><i className="fas fa-sign-out-alt"></i> Logout</Link>
+        </nav>
+      </aside>
+
+      <main className={styles.mainContent}>
+        <div className={styles.card + ' card mb-4'}>
+          <div className="card-body d-flex justify-content-between align-items-center">
+            <div>
+              <h4 className="mb-1">Welcome back, Dr. Smith</h4>
+              <p className="text-muted mb-0">Here's what's happening with your patients today</p>
+            </div>
+            <button className="btn btn-primary"><i className="fas fa-upload me-2"></i> New Scan</button>
+          </div>
         </div>
 
-        <nav className="sidebar-nav">
-          <Link to="/dashboard/patients" className="nav-item">
-            Patients
-          </Link>
-          <Link to="/dashboard/upload" className="nav-item">
-            Upload MRI
-          </Link>
-          <Link to="/dashboard/settings" className="nav-item">
-            Settings
-          </Link>
-          <Link to="/logout" className="nav-item logout">
-            Logout
-          </Link>
-        </nav>
-      </div>
+        <div className="row mb-4">
+          {stats.map((stat, idx) => (
+            <div key={idx} className="col-md-3">
+              <div className={`card ${styles.card}`}>
+                <div className="card-body d-flex justify-content-between">
+                  <div>
+                    <h6 className="text-muted">{stat.title}</h6>
+                    <h3 className="mb-0">{stat.value}</h3>
+                  </div>
+                  <div className={`bg-${stat.color} bg-opacity-10 p-3 rounded`}>
+                    <i className={`${stat.icon} text-${stat.color}`}></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
 
-      {/* Main Content */}
-      <div className="dashboard-content">
-        <Outlet /> {/* This will render the nested routes */}
-      </div>
-    </motion.div>
+        <div className={`card ${styles.card}`}>
+          <div className="card-header">
+            <h5 className="mb-0">Recent MRI Scans</h5>
+          </div>
+          <div className="card-body table-responsive">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Patient</th><th>Age</th><th>Scan Date</th><th>Result</th><th>Confidence</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {scans.map((scan, idx) => (
+                  <tr key={idx}>
+                    <td>
+                      <div className="d-flex align-items-center">
+                        <div className={`rounded-circle bg-${scan.badgeColor} text-white d-flex align-items-center justify-content-center me-3`} style={{ width: 36, height: 36 }}>
+                          {scan.initials}
+                        </div>
+                        <div>
+                          <h6 className="mb-0">{scan.name}</h6>
+                          <small className="text-muted">ID: {scan.id}</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{scan.age}</td>
+                    <td>{scan.time}</td>
+                    <td><span className={`badge bg-${scan.badgeColor}`}>{scan.result}</span></td>
+                    <td>
+                      <div className="progress" style={{ height: '6px' }}>
+                        <div className={`progress-bar bg-${scan.badgeColor}`} style={{ width: `${scan.confidence}%` }}></div>
+                      </div>
+                      <small>{scan.confidence}%</small>
+                    </td>
+                    <td><Link to="/results" className="btn btn-sm btn-outline-primary">View</Link></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
   );
 };
 

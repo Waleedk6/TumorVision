@@ -19,6 +19,7 @@
     padding: 0 2rem;
   }
   
+  /*heading */
   .hero-content h1 {
     font-size: 3.5rem;
     margin-bottom: 1.5rem;
@@ -172,7 +173,7 @@
   /* CTA Section */
   .cta-section {
     padding: 6rem 0;
-    background: linear-gradient(135deg, #34a853 0%, #1e8e3e 100%);
+    background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%); 
     color: white;
     text-align: center;
   }
@@ -451,6 +452,69 @@
   color: var(--primary);
   text-decoration: none;
 }
+
+/* Email Verification Specific Styles */
+.verification-status,
+.verification-success,
+.verification-error {
+  background: white;
+  padding: 2rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid var(--primary);
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.success-icon {
+  color: var(--success);
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.error-icon {
+  color: var(--error);
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.error-message {
+  color: var(--error);
+  margin-bottom: 1.5rem;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.error-actions .auth-button {
+  flex: 1;
+}
+
+.auth-button.secondary {
+  background: white;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+
 
 /* Security Section */
 .security-section {

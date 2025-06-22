@@ -1,5 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
+import '.././App.css'; // ✅ Import global styles
+import { Button } from "react-bootstrap";
 
 const Header = () => {
   return (
@@ -10,9 +12,15 @@ const Header = () => {
           <span className="logo-text">TumorVision</span>
         </Link>
         <nav className="nav-links">
-          <Link to="/login" className="nav-link medical-login">
+          <Button
+            as={Link}
+            to="/login"
+            variant="outline-light"
+            className="nav-link px-3 py-1 custom-outline-hover"
+            size="sm"
+          >
             Medical Login
-          </Link>
+          </Button>
         </nav>
       </div>
     </header>

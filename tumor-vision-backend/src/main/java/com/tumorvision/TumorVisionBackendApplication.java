@@ -8,5 +8,8 @@ public class TumorVisionBackendApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TumorVisionBackendApplication.class, args);
+		System.out.println("----------------------------------------");
+		System.out.println("        Tumor Vision is  Running        ");
+		System.out.println("----------------------------------------");
 	}
 }

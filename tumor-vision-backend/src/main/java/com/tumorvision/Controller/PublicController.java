@@ -104,9 +104,6 @@ public class PublicController {
         }
     }
 
-    /**
-     * Login
-     */
 @PostMapping("/login")
 public ResponseEntity<?> loginUser(@RequestBody Users user) {
     Logger logger = LoggerFactory.getLogger(PublicController.class);

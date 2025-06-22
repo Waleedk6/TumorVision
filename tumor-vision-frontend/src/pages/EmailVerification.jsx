@@ -1,37 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { verifyEmail, resendOtp } from '../API/RegisterAPI';
 
 const EmailVerification = () => {
-  const [status, setStatus] = useState('verifying');
-  const [error, setError] = useState('');
   const [otp, setOtp] = useState('');
-  const [searchParams] = useSearchParams();
-  const email = searchParams.get('email');
+  const [error, setError] = useState('');
+  const [status, setStatus] = useState('verifying'); // 'verifying', 'success', 'error'
+  const [loading, setLoading] = useState(false);
+  const { state } = useLocation();
   const navigate = useNavigate();
 
-  const handleVerify = async () => {
-    try {
-      setStatus('verifying');
-      const response = await verifyEmail(email, otp);
-      if (response.data) {
-        setStatus('success');
-        setTimeout(() => navigate('/login'), 3000);
-      }
-    } catch (err) {
-      setStatus('error');
-      setError(err.response?.data || 'Verification failed. Please try again.');
-    }
-  };
-
-  const handleResend = async () => {
-    try {
-      await resendOtp(email);
-      alert('New verification code has been sent to your email.');
-    } catch (err) {
-      setError('Failed to resend code. Please try again.');
-    }
-  };
+  // Get email from navigation state or fallback
+  const email = state?.email || '';
 
   useEffect(() => {
     if (!email) {
@@ -40,6 +20,45 @@ const EmailVerification = () => {
     }
   }, [email]);
 
+  const handleVerify = async () => {
+    if (!otp || !email) return;
+    
+    setLoading(true);
+    setError('');
+    setStatus('verifying');
+    
+    try {
+      const response = await verifyEmail(email, otp);
+      if (response.status === 200) {
+        setStatus('success');
+        setTimeout(() => navigate('/dashboard'), 3000);
+      }
+    } catch (err) {
+      setStatus('error');
+      setError(err.response?.data?.message || 'Verification failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (!email) return;
+    
+    setLoading(true);
+    setError('');
+    
+    try {
+      await resendOtp(email);
+      setStatus('verifying');
+      alert('New verification code has been sent to your email.');
+    } catch (err) {
+      setStatus('error');
+      setError(err.response?.data?.message || 'Failed to resend code. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="auth-page">
       <div className="auth-container">
@@ -47,7 +66,7 @@ const EmailVerification = () => {
           <h1>TumorVision</h1>
           <h2>Email Verification</h2>
           <p>
-            {status === 'verifying' && 'Verifying your email address...'}
+            {status === 'verifying' && `Enter the verification code sent to ${email}`}
             {status === 'success' && 'Email successfully verified!'}
             {status === 'error' && 'Verification failed'}
           </p>
@@ -56,26 +75,35 @@ const EmailVerification = () => {
         {status === 'verifying' && (
           <div className="verification-status">
             <div className="form-group">
-              <label>Enter Verification Code</label>
+              <label>Verification Code</label>
               <input
                 type="text"
                 placeholder="Enter 6-digit code"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
+                maxLength="6"
+                disabled={loading}
               />
             </div>
-            <button 
-              className="auth-button"
-              onClick={handleVerify}
-            >
-              Verify Email
-            </button>
-            <button 
-              className="auth-button secondary"
-              onClick={handleResend}
-            >
-              Resend Code
-            </button>
+
+            {error && <div className="error-message">{error}</div>}
+
+            <div className="button-group">
+              <button 
+                className="auth-button"
+                onClick={handleVerify}
+                disabled={loading || otp.length !== 6}
+              >
+                {loading ? 'Verifying...' : 'Verify Email'}
+              </button>
+              <button 
+                className="auth-button secondary"
+                onClick={handleResend}
+                disabled={loading}
+              >
+                Resend Code
+              </button>
+            </div>
           </div>
         )}
 
@@ -85,7 +113,7 @@ const EmailVerification = () => {
             <p>Your email has been successfully verified.</p>
             <p>You will be redirected to the login page shortly.</p>
             <Link to="/login" className="auth-button">
-              Go to Login
+              Go to Login Now
             </Link>
           </div>
         )}
@@ -95,20 +123,20 @@ const EmailVerification = () => {
             <div className="error-icon">✗</div>
             <p className="error-message">{error}</p>
             <div className="error-actions">
-              {email && (
+              {email ? (
                 <>
                   <button 
                     className="auth-button"
                     onClick={handleResend}
+                    disabled={loading}
                   >
-                    Resend Code
+                    {loading ? 'Sending...' : 'Resend Code'}
                   </button>
                   <Link to="/login" className="auth-button secondary">
                     Go to Login
                   </Link>
                 </>
-              )}
-              {!email && (
+              ) : (
                 <Link to="/register" className="auth-button">
                   Register Again
                 </Link>

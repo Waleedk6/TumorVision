@@ -16,25 +16,29 @@ const Login = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError('');
+
+  try {
+    const userData = await loginUser({
+      email: formData.email,
+      password: formData.password
+    });
+
+    console.log('Login successful, user data:', userData);
     
-    try {
-      const response = await loginUser(formData);
-      if (response.data.user) {
-        // Store user data and token as needed
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        navigate('/dashboard');
-      }
-    } catch (err) {
-      setError(err.response?.data || 'Login failed. Please check your credentials.');
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Redirect to dashboard or home page
+    navigate('/dashboard');
+    
+  } catch (err) {
+    console.error('Login error details:', err);
+    setError(err.message || 'Login failed. Please check your credentials.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="auth-page">

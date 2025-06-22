@@ -26,50 +26,50 @@ public class PublicController {
 
     @Autowired
     private UserRepository userRepository;
-    
+
     private static final Logger log = LoggerFactory.getLogger(PublicController.class);
 
-
-    /** 
-     * Signup step 1: save basic user info with PENDING status 
+    /**
+     * Signup step 1: save basic user info with PENDING status
      * (you can send back a message or DTO as needed)
      */
-@PostMapping("/register")
-public ResponseEntity<?> registerUser(@RequestBody Users user) {
-    try {
-        // Add detailed request logging
-        log.info("Registration request received for email: {}", user.getEmail());
-        log.debug("Full registration data - Username: {}, Email: {}, Password: [PROTECTED]", 
-            user.getUsername(), 
-            user.getEmail());
-        
-        // Log the complete user object (except password)
-        Users sanitizedUser = new Users();
-        sanitizedUser.setUsername(user.getUsername());
-        sanitizedUser.setEmail(user.getEmail());
-        sanitizedUser.setRoles(user.getRoles());
-        log.debug("User object details: {}", sanitizedUser);
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody Users user) {
+        try {
+            // Add detailed request logging
+            log.info("Registration request received for email: {}", user.getEmail());
+            log.debug("Full registration data - Username: {}, Email: {}, Password: [PROTECTED]",
+                    user.getUsername(),
+                    user.getEmail());
 
-        userServices.saveUser(user);
-        
-        log.info("Registration successful for email: {}", user.getEmail());
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body("User registered. Please verify your email.");
-    } catch (Exception e) {
-        log.error("Registration failed for email: {}", user != null ? user.getEmail() : "unknown", e);
-        
-        // Return more structured error information
-        Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("message", "Registration failed");
-        errorResponse.put("error", e.getMessage());
-        errorResponse.put("timestamp", Instant.now().toString());
-        
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(errorResponse);
+            // Log the complete user object (except password)
+            Users sanitizedUser = new Users();
+            sanitizedUser.setUsername(user.getUsername());
+            sanitizedUser.setEmail(user.getEmail());
+            sanitizedUser.setRoles(user.getRoles());
+            log.debug("User object details: {}", sanitizedUser);
+
+            userServices.saveUser(user);
+
+            log.info("Registration successful for email: {}", user.getEmail());
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .header("Content-Type", "text/plain")
+                    .body("User registered. Please verify your email.");
+        } catch (Exception e) {
+            log.error("Registration failed for email: {}", user != null ? user.getEmail() : "unknown", e);
+
+            // Return more structured error information
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Registration failed");
+            errorResponse.put("error", e.getMessage());
+            errorResponse.put("timestamp", Instant.now().toString());
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(errorResponse);
+        }
     }
-}
 
     /**
      * Signup step 2: verify email via OTP
@@ -93,7 +93,7 @@ public ResponseEntity<?> registerUser(@RequestBody Users user) {
      * Signup step 3: resend OTP if needed
      */
     @PostMapping("/resend-otp")
-    public ResponseEntity<?> resendOtp(@RequestBody Map<String,String> body) {
+    public ResponseEntity<?> resendOtp(@RequestBody Map<String, String> body) {
         try {
             userServices.resendOtp(body.get("email"));
             return ResponseEntity.ok("OTP resent successfully.");
@@ -114,21 +114,25 @@ public ResponseEntity<?> registerUser(@RequestBody Users user) {
             if (found == null) {
                 return ResponseEntity
                         .status(HttpStatus.UNAUTHORIZED)
-                        .body("Invalid email or password");
+                        .body(Map.of(
+                                "success", false,
+                                "message", "Invalid email or password"));
             }
-            if (!"PASS".equals(found.getStatus())) {
-                return ResponseEntity
-                        .status(HttpStatus.FORBIDDEN)
-                        .body("Please verify your email first.");
-            }
-            Map<String,Object> resp = new HashMap<>();
-            resp.put("user", found);
-            return ResponseEntity.ok(resp);
+
+            // Ensure consistent response structure
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("user", found);
+            response.put("message", "Login successful");
+
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Login failed: " + e.getMessage());
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Login failed: " + e.getMessage()));
         }
     }
 }

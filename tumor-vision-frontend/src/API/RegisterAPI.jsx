@@ -22,6 +22,28 @@ axios.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// In RegisterAPI.jsx
+axios.interceptors.response.use(
+  (response) => {
+    // Ensure consistent response structure
+    return {
+      status: response.status,
+      data: response.data,
+      headers: response.headers,
+    };
+  },
+
+  // Format error responses consistently
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Response interceptor for error handling
 axios.interceptors.response.use(
   (response) => response,
@@ -45,31 +67,43 @@ export const registerUser = async (userData) => {
     console.log("[FRONTEND DEBUG] Sending registration data:", {
       username: userData.username,
       email: userData.email,
-      password: "HIDDEN" // Don't log actual passwords
+      password: "HIDDEN",
     });
-    
+
     const response = await axios.post(`${API_BASE_URL}/register`, {
+      // Changed endpoint to match backend
       username: userData.username,
       email: userData.email,
-      password: userData.password
+      password: userData.password,
     });
-    
-    console.log("[FRONTEND DEBUG] Registration response:", response);
-    return response.data;
+
+    console.log("[FRONTEND DEBUG] Full registration response:", {
+      status: response.status,
+      data: response.data,
+      headers: response.headers,
+    });
+
+    return response;
   } catch (error) {
     console.error("[FRONTEND DEBUG] Registration error:", {
       status: error.response?.status,
       data: error.response?.data,
-      message: error.message
+      message: error.message,
+      config: error.config,
     });
-    throw error.response?.data || { message: "Registration failed" };
+    throw (
+      error.response?.data || {
+        message: "Registration failed",
+        status: error.response?.status || 500,
+      }
+    );
   }
 };
 
 export const verifyEmail = async (email, otp) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/verify-email`, {
-      params: { email, otp }
+      params: { email, otp },
     });
     return response.data;
   } catch (error) {
@@ -88,22 +122,34 @@ export const resendOtp = async (email) => {
 
 export const loginUser = async (credentials) => {
   try {
-    // First get the user data
     const response = await axios.post(`${API_BASE_URL}/login`, {
       email: credentials.email,
-      password: credentials.password
+      password: credentials.password,
     });
-    
-    if (response.data) {
-      // Create and store Basic Auth token
-      const authToken = createBasicToken(credentials.email, credentials.password);
-      localStorage.setItem("authToken", authToken);
-      localStorage.setItem("user", JSON.stringify(response.data));
+
+    // Debug log the full response
+    console.log("Login API Response:", response);
+
+    // Handle both response structures
+    const userData = response.data.user || response.data;
+
+    if (!userData) {
+      throw new Error("Invalid response structure from server");
     }
-    
-    return response.data;
+
+    // Create and store Basic Auth token
+    const authToken = createBasicToken(credentials.email, credentials.password);
+    localStorage.setItem("authToken", authToken);
+    localStorage.setItem("user", JSON.stringify(userData));
+
+    return userData;
   } catch (error) {
-    throw error.response?.data || { message: "Login failed" };
+    console.error("Login Error:", error.response?.data || error.message);
+    throw (
+      error.response?.data || {
+        message: "Login failed. Please check your credentials.",
+      }
+    );
   }
 };
 
@@ -124,15 +170,18 @@ export const getFullUserData = async () => {
 
 export const changePassword = async (passwordData) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/change-password`, passwordData);
-    
+    const response = await axios.put(
+      `${API_BASE_URL}/change-password`,
+      passwordData
+    );
+
     // Update stored auth token if password changed successfully
     if (response.data.success) {
       const user = JSON.parse(localStorage.getItem("user"));
       const authToken = createBasicToken(user.email, passwordData.newPassword);
       localStorage.setItem("authToken", authToken);
     }
-    
+
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: "Password change failed" };

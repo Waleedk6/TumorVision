@@ -1,46 +1,75 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { registerUser } from '../API/RegisterAPI';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { registerUser } from "../API/RegisterAPI";
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: ''
+    username: "",
+    email: "",
+    password: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    
+    setError("");
+
     try {
-      const userData = {
-        username: formData.username,
-        email: formData.email,
+      console.log("[DEBUG] Registration form data:", {
+        username: formData.username.trim(),
+        email: formData.email.trim(),
+        password: "HIDDEN", // Never log actual passwords
+      });
+
+      const response = await registerUser({
+        username: formData.username.trim(),
+        email: formData.email.trim(),
         password: formData.password,
-        roles: ['PATIENT'] // Default role for new registrations
-      };
-      
-      const response = await registerUser(userData);
+      });
+
+      console.log("[COMPONENT] Received response:", response);
+
       if (response.status === 201) {
-        navigate(`/verify-email?email=${encodeURIComponent(formData.email)}`);
+        console.log("[DEBUG] Navigating to /verify-email with state:", {
+          email: formData.email.trim(),
+        });
+
+        // Double-ensure navigation
+        navigate("/verify-email", {
+          state: {
+            email: formData.email.trim(),
+            fromRegistration: true,
+          },
+          replace: true, // Prevent back navigation to register
+        });
+
+        // Fallback check after 1 second
+        setTimeout(() => {
+          if (window.location.pathname !== "/verify-email") {
+            console.error("Navigation failed, forcing redirect");
+            window.location.href = `/verify-email?email=${encodeURIComponent(
+              formData.email.trim()
+            )}`;
+          }
+        }, 1000);
       }
     } catch (err) {
-      setError(err.response?.data || 'Registration failed. Please try again.');
+      console.error("[DEBUG] Registration error:", err);
+      setError(
+        err.response?.data?.message || "Registration failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <div className="auth-page register-page">
       <div className="auth-wrapper">
@@ -92,23 +121,21 @@ const Register = () => {
 
             <div className="form-group checkbox-group">
               <label>
-                <input type="checkbox" required /> I agree to the{' '}
-                <Link to="/terms">Terms of Service</Link> and{' '}
+                <input type="checkbox" required /> I agree to the{" "}
+                <Link to="/terms">Terms of Service</Link> and{" "}
                 <Link to="/privacy">Privacy Policy</Link>
               </label>
             </div>
 
-            <button 
-              type="submit" 
-              className="auth-button"
-              disabled={loading}
-            >
-              {loading ? 'Creating Account...' : 'Create Account'}
+            <button type="submit" className="auth-button" disabled={loading}>
+              {loading ? "Creating Account..." : "Create Account"}
             </button>
           </form>
 
           <div className="auth-footer">
-            <p>Already have an account? <Link to="/login">Log in</Link></p>
+            <p>
+              Already have an account? <Link to="/login">Log in</Link>
+            </p>
           </div>
         </div>
       </div>

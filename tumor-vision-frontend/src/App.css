@@ -7,6 +7,6 @@
 
 .custom-outline-hover:hover {
   background-color: rgba(255, 255, 255, 0.1); /* subtle glow */
-  color: #000dff !important;                 /* deep blue text */
-  border: 2px solid #000dff !important;      /* deep blue border */
+  color: #1a73e8 !important;                 /* deep blue text */
+  border: 2px solid #1a73e8 !important;      /* deep blue border */
 }

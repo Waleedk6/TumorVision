@@ -105,7 +105,7 @@ export const verifyEmail = async (email, otp) => {
     const response = await axios.get(`${API_BASE_URL}/verify-email`, {
       params: { email, otp },
     });
-    return response.data;
+    return response;
   } catch (error) {
     throw error.response?.data || { message: "Email verification failed" };
   }

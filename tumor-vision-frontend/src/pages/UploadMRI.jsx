@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './UploadMRI.module.css';
+import { Link } from 'react-router-dom';
 
 const UploadMRI = () => {
   const [file, setFile] = useState(null);
@@ -66,16 +67,16 @@ const UploadMRI = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.sidebar}>
-        <div className={styles.menu}>
-          <a href="dashboard.html">Dashboard</a>
-          <a href="upload.html" className={styles.active}>Upload MRI</a>
-          <a href="#">Patients</a>
-          <a href="#">Analytics</a>
-          <a href="#">Settings</a>
-          <a href="index.html">Logout</a>
-        </div>
-      </div>
+      <aside className={styles.sidebar}>
+        <nav className={styles.menu}>
+          <Link to="/dashboard" className={`${styles.link} ${styles.active}`}><i className="fas fa-tachometer-alt"></i> Dashboard</Link>
+            <Link to="/upload" className={styles.link}><i className="fas fa-upload"></i> Upload MRI</Link>
+            <Link to="/patients" className={styles.link}><i className="fas fa-users"></i> Patients</Link>
+            <Link to="/analytics" className={styles.link}><i className="fas fa-chart-bar"></i> Analytics</Link>
+            <Link to="/settings" className={styles.link}><i className="fas fa-cog"></i> Settings</Link>
+          <Link to="/" className={styles.link}><i className="fas fa-sign-out-alt"></i> Logout</Link>
+        </nav>
+      </aside>
       <div className={styles.mainContent}>
         <div className="container-fluid">
           <h2>Upload MRI Scan</h2>

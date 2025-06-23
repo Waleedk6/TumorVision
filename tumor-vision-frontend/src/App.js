@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import Patients from "./pages/Patients";
 import UploadMRI from "./pages/UploadMRI";
 import Settings from "./pages/Settings";
+import ScanResults from "./pages/ScanResults";
 import EmailVerification from "./pages/EmailVerification";
 
 // Global styles
@@ -31,12 +32,12 @@ function App() {
         <Route path="/verify-email" element={<EmailVerification />} />
 
         {/* Dashboard and its nested routes */}
-        <Route path="/dashboard" element={<Dashboard />}>
-          <Route index element={<Navigate to="patients" />} />
-          <Route path="patients" element={<Patients />} />
-          <Route path="upload" element={<UploadMRI />} />
-          <Route path="settings" element={<Settings />} />
-        </Route>
+        <Route path="/dashboard" element={<Dashboard />}/>
+        <Route path="/results" element={<ScanResults />} />
+        <Route path="/patients" element={<Patients />} />
+        <Route path="/upload" element={<UploadMRI />} />
+        <Route path="/settings" element={<Settings />} />
+
 
         {/* Fallback redirect */}
         <Route path="*" element={<Navigate to="/" replace />} />

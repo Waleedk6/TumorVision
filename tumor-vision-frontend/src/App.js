@@ -5,14 +5,17 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Patients from "./pages/Patients";
-import UploadArea from "./pages/UploadArea";
+import UploadMRI from "./pages/UploadMRI";
 import Settings from "./pages/Settings";
 import EmailVerification from "./pages/EmailVerification";
+
+// Global styles
 import "./styles/colors.css";
 import "./styles/landing.css";
 import "./styles/utilities.css";
@@ -26,13 +29,17 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/verify-email" element={<EmailVerification />} />
+
+        {/* Dashboard and its nested routes */}
         <Route path="/dashboard" element={<Dashboard />}>
-          <Route path="patients" element={<Patients />} />
-          <Route path="upload" element={<UploadArea />} />
-          <Route path="settings" element={<Settings />} />
-          
           <Route index element={<Navigate to="patients" />} />
+          <Route path="patients" element={<Patients />} />
+          <Route path="upload" element={<UploadMRI />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
+
+        {/* Fallback redirect */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

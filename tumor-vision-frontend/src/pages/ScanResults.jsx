@@ -25,9 +25,6 @@ const ScanResults = () => {
           <Link to="/patients" className={styles.link}>
             <i className="fas fa-users"></i> Patients
           </Link>
-          <Link to="/analytics" className={styles.link}>
-            <i className="fas fa-chart-bar"></i> Analytics
-          </Link>
           <Link to="/settings" className={styles.link}>
             <i className="fas fa-cog"></i> Settings
           </Link>

@@ -1,4 +1,15 @@
-
+:root {
+  --primary: #1a73e8;
+  --primary-dark: #0d47a1;
+  --primary-light: #e8f0fe;
+  --secondary: #fbbc04;
+  --danger: #d32f2f;
+  --success: #388e3c;
+  --gray: #5f6368;
+  --light-gray: #f1f3f4;
+  --white: #ffffff;
+  --sidebar-width: 280px;
+}
 .sidebar {
   position: fixed;
   top: 0;

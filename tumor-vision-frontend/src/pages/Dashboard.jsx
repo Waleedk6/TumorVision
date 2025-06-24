@@ -1,15 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './Dashboard.module.css';
 import { Link } from 'react-router-dom';
+import Calendar from 'react-calendar';
 
 const Dashboard = () => {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
   const stats = [
     { title: "Today's Scans", value: 8, icon: 'fas fa-calendar-day', color: 'primary' },
     { title: 'Total Patients', value: 142, icon: 'fas fa-user-injured', color: 'success' },
     { title: 'Positive Cases', value: 23, icon: 'fas fa-exclamation-triangle', color: 'danger' },
     { title: 'Accuracy Rate', value: '99%', icon: 'fas fa-check-circle', color: 'info' },
   ];
+  const appointments = [
+    { date: new Date(2025, 5, 14), type: 'completed' },
+    { date: new Date(2025, 5, 15), type: 'completed' },
+    { date: new Date(2025, 5, 18), type: 'completed' },
+    { date: new Date(2025, 5, 20), type: 'completed' },
+    { date: new Date(2025, 5, 21), type: 'completed' },
+    { date: new Date(2025, 5, 25), type: 'upcoming' },
+    { date: new Date(2025, 5, 26), type: 'upcoming' },
+    { date: new Date(2025, 5, 30), type: 'upcoming' },
+    { date: new Date(2025, 6, 4), type: 'upcoming' },
+  ];
 
+  const tileClassName = ({ date }) => {
+    const found = appointments.find(app =>
+      date.getFullYear() === app.date.getFullYear() &&
+      date.getMonth() === app.date.getMonth() &&
+      date.getDate() === app.date.getDate()
+    );
+    return found ? styles[found.type] : null;
+  };
   const scans = [
     {
       name: 'John Doe', age: 45, time: 'Today, 10:30 AM', result: 'Tumor Detected', confidence: 87,
@@ -30,14 +52,16 @@ const Dashboard = () => {
       <aside className={styles.sidebar}>
         <nav className={styles.menu}>
           <Link to="/dashboard" className={`${styles.link} ${styles.active}`}><i className="fas fa-tachometer-alt"></i> Dashboard</Link>
-            <Link to="/upload" className={styles.link}><i className="fas fa-upload"></i> Upload MRI</Link>
-            <Link to="/patients" className={styles.link}><i className="fas fa-users"></i> Patients</Link>
-            <Link to="/settings" className={styles.link}><i className="fas fa-cog"></i> Settings</Link>
+          <Link to="/upload" className={styles.link}><i className="fas fa-upload"></i> Upload MRI</Link>
+          <Link to="/patients" className={styles.link}><i className="fas fa-users"></i> Patients</Link>
+          <Link to="/settings" className={styles.link}><i className="fas fa-cog"></i> Settings</Link>
           <Link to="/" className={styles.link}><i className="fas fa-sign-out-alt"></i> Logout</Link>
         </nav>
       </aside>
 
       <main className={styles.mainContent}>
+
+
         <div className={styles.card + ' card mb-4'}>
           <div className="card-body d-flex justify-content-between align-items-center">
             <div>
@@ -65,6 +89,18 @@ const Dashboard = () => {
             </div>
           ))}
         </div>
+        <div className={`card mb-4 ${styles.card} ${styles.calendarCard}`}>
+
+          <div className="card-body">
+            <h5 className="mb-3">Appointment Calendar</h5>
+            <Calendar tileClassName={tileClassName} className={styles.calendar} />
+            <div className={styles.legend}>
+              <span className={styles.completedDot}></span> Completed &nbsp;&nbsp;
+              <span className={styles.upcomingDot}></span> Upcoming
+            </div>
+          </div>
+        </div>
+
 
         <div className={`card ${styles.card}`}>
           <div className="card-header">

@@ -7,7 +7,7 @@ const Dashboard = () => {
     { title: "Today's Scans", value: 8, icon: 'fas fa-calendar-day', color: 'primary' },
     { title: 'Total Patients', value: 142, icon: 'fas fa-user-injured', color: 'success' },
     { title: 'Positive Cases', value: 23, icon: 'fas fa-exclamation-triangle', color: 'danger' },
-    { title: 'Accuracy Rate', value: '96.7%', icon: 'fas fa-check-circle', color: 'info' },
+    { title: 'Accuracy Rate', value: '99%', icon: 'fas fa-check-circle', color: 'info' },
   ];
 
   const scans = [

@@ -16,13 +16,13 @@ const ScanResults = () => {
       {/* Sidebar */}
       <aside className={styles.sidebar}>
         <nav className={styles.menu}>
-          <Link to="/dashboard" className={`${styles.link} ${styles.active}`}>
+          <Link to="/dashboard" className={styles.link}>
             <i className="fas fa-tachometer-alt"></i> Dashboard
           </Link>
           <Link to="/upload" className={styles.link}>
             <i className="fas fa-upload"></i> Upload MRI
           </Link>
-          <Link to="/patients" className={styles.link}>
+          <Link to="/patients" className={`${styles.link} ${styles.active}}`}>
             <i className="fas fa-users"></i> Patients
           </Link>
           <Link to="/settings" className={styles.link}>

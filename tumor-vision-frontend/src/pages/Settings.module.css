@@ -1,0 +1,128 @@
+/* Settings.module.css */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100vh;
+  background-color: #0d47a1;
+  color: white;
+  padding-top: 70px;
+  z-index: 1000;
+}
+
+.menu {
+  padding: 20px 0;
+}
+
+.link {
+  display: block;
+  padding: 12px 20px;
+  color: white;
+  text-decoration: none;
+  transition: background 0.3s, border-left 0.3s;
+  border-left: 4px solid transparent;
+}
+
+.link:hover,
+.linkActive {
+  background: rgba(255, 255, 255, 0.1);
+  border-left: 4px solid #fbbc04;
+}
+
+.settingsPage {
+  margin-left: 280px;
+  padding: 90px 20px 40px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.heading {
+  font-size: 2rem;
+  color: #0d47a1;
+  margin-bottom: 30px;
+}
+
+.settingsSection {
+  background: #fff;
+  padding: 25px;
+  margin-bottom: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.settingsSection h2 {
+  font-size: 1.25rem;
+  margin-bottom: 20px;
+  color: #1a73e8;
+}
+
+.settingsForm .formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #333;
+}
+
+.formControl {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  transition: all 0.3s;
+  font-size: 1rem;
+}
+
+.formControl:focus {
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 0.2rem rgba(26, 115, 232, 0.15);
+  outline: none;
+}
+
+.securityActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btnPrimary {
+  background-color: #1a73e8;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.btnPrimary:hover {
+  background-color: #0d47a1;
+}
+
+.btnOutline {
+  background-color: transparent;
+  border: 1px solid #1a73e8;
+  color: #1a73e8;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s, color 0.3s;
+}
+
+.btnOutline:hover {
+  background-color: #1a73e8;
+  color: white;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 30px;
+}

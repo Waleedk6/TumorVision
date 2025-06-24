@@ -888,33 +888,3 @@
   margin-top: 2rem;
   justify-content: flex-end;
 }
-
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: var(--sidebar-width);
-  height: 100vh;
-  background: var(--primary-dark);
-  color: white;
-  padding-top: 70px;
-}
-
-.menu {
-  padding: 20px 0;
-}
-
-.link {
-  display: block;
-  padding: 12px 20px;
-  color: white;
-  text-decoration: none;
-  transition: all 0.3s;
-  border-left: 4px solid transparent;
-}
-
-.link:hover,
-.active {
-  background: rgba(255, 255, 255, 0.1);
-  border-left: 4px solid var(--secondary);
-}

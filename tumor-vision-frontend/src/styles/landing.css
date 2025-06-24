@@ -1,196 +1,197 @@
 /* Landing Page Styles */
 .landing-page {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  
-  .hero-section {
-    background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
-    color: white;
-    padding: 8rem 0;
-    text-align: center;
-  }
-  
-  .container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-  .container h1{
-color: white !important;
-  }
-  
-  /*heading */
-  .hero-content h1 {
-    font-size: 3.5rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .subtitle {
-    font-size: 1.5rem;
-    margin-bottom: 3rem;
-    opacity: 0.9;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  .cta-buttons {
-    display: flex;
-    gap: 1.5rem;
-    justify-content: center;
-    margin-top: 3rem;
-  }
-  
-  .btn-primary, .btn-outline {
-    padding: 1rem 2rem;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 1.1rem;
-    text-decoration: none;
-    transition: all 0.3s ease;
-  }
-  
-  .btn-primary {
-    background: white;
-    color: #1a73e8;
-    border: 2px solid white;
-  }
-  
-  .btn-primary:hover {
-    background: #e8f0fe;
-    transform: translateY(-2px);
-  }
-  
-  .btn-outline {
-    background: transparent;
-    color: white;
-    border: 2px solid white;
-  }
-  
-  .btn-outline:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
-  }
-  
-  /* Features Section */
-  .features-section {
-    padding: 6rem 0;
-    background: #f8f9fa;
-  }
-  
-  .features-section h2 {
-    text-align: center;
-    margin-bottom: 4rem;
-    font-size: 2.5rem;
-    color: #202124;
-  }
-  
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-  }
-  
-  .feature-card {
-    background: white;
-    padding: 2.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease;
-  }
-  
-  .feature-card:hover {
-    transform: translateY(-10px);
-  }
-  
-  .feature-icon {
-    font-size: 3rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .feature-card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: #202124;
-  }
-  
-  .feature-card p {
-    color: #5f6368;
-    line-height: 1.6;
-  }
-  
-  /* How It Works */
-  .how-it-works {
-    padding: 6rem 0;
-    background: white;
-  }
-  
-  .how-it-works h2 {
-    text-align: center;
-    margin-bottom: 4rem;
-    font-size: 2.5rem;
-    color: #202124;
-  }
-  
-  .steps {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-  
-  .step {
-    text-align: center;
-    padding: 2rem;
-  }
-  
-  .step-number {
-    width: 60px;
-    height: 60px;
-    background: #e8f0fe;
-    color: #1a73e8;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin: 0 auto 1.5rem;
-  }
-  
-  .step h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: #202124;
-  }
-  
-  .step p {
-    color: #5f6368;
-    line-height: 1.6;
-  }
-  
-  /* CTA Section */
-  .cta-section {
-    padding: 6rem 0;
-    background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%); 
-    color: white;
-    text-align: center;
-  }
-  
-  .cta-section h2 {
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-  }
-  
-  .cta-section .btn-primary {
-    font-size: 1.2rem;
-    padding: 1.2rem 2.5rem;
-  }
-  /* Add to existing landing.css */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.hero-section {
+  background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+  color: white;
+  padding: 8rem 0;
+  text-align: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+.container h1 {
+  color: white !important;
+}
+
+/*heading */
+.hero-content h1 {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 3rem;
+  opacity: 0.9;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+.btn-primary,
+.btn-outline {
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: white;
+  color: #1a73e8;
+  border: 2px solid white;
+}
+
+.btn-primary:hover {
+  background: #e8f0fe;
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Features Section */
+.features-section {
+  padding: 6rem 0;
+  background: #f8f9fa;
+}
+
+.features-section h2 {
+  text-align: center;
+  margin-bottom: 4rem;
+  font-size: 2.5rem;
+  color: #202124;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.feature-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #202124;
+}
+
+.feature-card p {
+  color: #5f6368;
+  line-height: 1.6;
+}
+
+/* How It Works */
+.how-it-works {
+  padding: 6rem 0;
+  background: white;
+}
+
+.how-it-works h2 {
+  text-align: center;
+  margin-bottom: 4rem;
+  font-size: 2.5rem;
+  color: #202124;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.step {
+  text-align: center;
+  padding: 2rem;
+}
+
+.step-number {
+  width: 60px;
+  height: 60px;
+  background: #e8f0fe;
+  color: #1a73e8;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 0 auto 1.5rem;
+}
+
+.step h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #202124;
+}
+
+.step p {
+  color: #5f6368;
+  line-height: 1.6;
+}
+
+/* CTA Section */
+.cta-section {
+  padding: 6rem 0;
+  background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+  color: white;
+  text-align: center;
+}
+
+.cta-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.cta-section .btn-primary {
+  font-size: 1.2rem;
+  padding: 1.2rem 2.5rem;
+}
+/* Add to existing landing.css */
 .how-it-works {
   padding: 6rem 0;
   background: var(--surface);
@@ -479,8 +480,12 @@ color: white !important;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .success-icon {
@@ -518,7 +523,6 @@ color: white !important;
   border: 1px solid var(--primary);
 }
 
-
 /* Security Section */
 .security-section {
   background: var(--primary-light);
@@ -550,7 +554,7 @@ color: white !important;
   .auth-page {
     grid-template-columns: 1fr;
   }
-  
+
   .security-section {
     display: none;
   }
@@ -596,7 +600,7 @@ color: white !important;
   padding: 2.5rem;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 @media (max-width: 768px) {
@@ -604,7 +608,7 @@ color: white !important;
     padding: 1rem;
     min-height: calc(100vh - 60px);
   }
-  
+
   .auth-page.register-page .auth-container {
     padding: 1.5rem;
   }
@@ -649,7 +653,7 @@ color: white !important;
 }
 
 .nav-item:hover {
-  background: rgba(0,0,0,0.05);
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .nav-item.active {
@@ -669,7 +673,7 @@ color: white !important;
   margin-top: 1rem;
 }
 
-.patients-table th, 
+.patients-table th,
 .patients-table td {
   padding: 1rem;
   text-align: left;
@@ -709,7 +713,7 @@ color: white !important;
   .dashboard-layout {
     grid-template-columns: 1fr;
   }
-  
+
   .dashboard-sidebar {
     display: none; /* Or implement mobile menu */
   }

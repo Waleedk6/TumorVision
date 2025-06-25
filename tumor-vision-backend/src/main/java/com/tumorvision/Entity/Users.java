@@ -37,7 +37,7 @@ public class Users {
 
     private List<String> roles; // e.g., "admin", "doctor", "patient"
 
-    private String status; // e.g., "PENDING", "ACTIVE"
+    private String status; 
 
     private String verificationToken;
 

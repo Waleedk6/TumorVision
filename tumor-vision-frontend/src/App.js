@@ -15,7 +15,7 @@ import UploadMRI from "./pages/UploadMRI";
 import Settings from "./pages/Settings";
 import ScanResults from "./pages/ScanResults";
 import EmailVerification from "./pages/EmailVerification";
-
+ 
 // Global styles
 import "./styles/colors.css";
 import "./styles/landing.css";

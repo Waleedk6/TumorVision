@@ -31,7 +31,6 @@ BASE_DIR = os.path.dirname(__file__)
 # Model paths
 DETECT_MODEL_PATH = os.path.join(BASE_DIR, 'detect.weights.keras')
 CLASSIFY_MODEL_PATH = os.path.join(BASE_DIR, 'classification.weights.keras')
-# --- UPDATED MODEL PATH ---
 SEGMENT_MODEL_PATH = os.path.join(BASE_DIR, 'best.pt')
 
 os.makedirs(UPLOADS_DIR, exist_ok=True)

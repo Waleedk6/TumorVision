@@ -231,7 +231,7 @@ export default function LandingPage() {
         <Particles />
         <main style={styles.hero}>
           <h1 style={styles.title}>
-            MedScan <span style={{ color: '#0070f3' }}>AI</span> (brain)
+            Tumor Vision <span style={{ color: '#0070f3' }}>AI</span> (brain)
           </h1>
           <p style={styles.subtitle}>
             Revolutionize patient care with <strong>secure records</strong>, <strong>verified doctors</strong>, and <strong>AI-powered MRI insights</strong> – fast, accurate, private.
@@ -273,7 +273,7 @@ export default function LandingPage() {
                 e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 112, 243, 0.3)';
               }}
             >
-              Launch Now
+              Sign up
             </button>
           </Link>
           <Link href="/auth/signin" style={{ textDecoration: 'none' }}>

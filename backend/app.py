@@ -152,11 +152,9 @@ def api_mri_scan(auth_email=None):
     POST /api/doctor/mri-scan
     {
         "patient_id": 12,
-        "image_base64": "data:image/jpeg;base64,...."
+        "image_base64": "image/jpeg;base64,...."
     }
     """
-    # The decorator now handles OPTIONS automatically
-    
     # Parse JSON payload
     try:
         data = request.get_json(silent=True) or {}
@@ -178,13 +176,25 @@ def api_mri_scan(auth_email=None):
     # Run the full 3-step AI pipeline
     result, status_code = process_mri_scan(patient_id, image_base64)
 
-    # Log the outcome
+    # Log the outcome SAFELY
     if status_code == 200:
-        app.logger.info(
-            f"MRI scan SUCCESS for patient_id={patient_id} by doctor={auth_email}. "
-            f"Result: {result.get('classification', {}).get('label')} "
-            f"(conf {result.get('classification', {}).get('confidence'):.2f})"
-        )
+        if 'classification' in result:
+            # Valid MRI case
+            classification = result['classification']
+            label = classification.get('label', 'unknown')
+            confidence = classification.get('confidence')
+            conf_str = f"{confidence:.2f}" if isinstance(confidence, (int, float)) else "N/A"
+            app.logger.info(
+                f"MRI scan SUCCESS for patient_id={patient_id} by doctor={auth_email}. "
+                f"Result: {label} (conf {conf_str})"
+            )
+        else:
+            # Invalid MRI case (returned from detection stage)
+            det_conf = result.get('confidence', 'N/A')
+            app.logger.info(
+                f"MRI scan SUCCESS (but invalid image) for patient_id={patient_id} by doctor={auth_email}. "
+                f"Detection confidence: {det_conf}"
+            )
     else:
         app.logger.error(
             f"MRI scan FAILED for patient_id={patient_id} by doctor={auth_email}. "

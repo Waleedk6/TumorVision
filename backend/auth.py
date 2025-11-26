@@ -68,7 +68,6 @@ def load_models():
 
     try:
         segment_model = YOLO(SEGMENT_MODEL_PATH)
-        # --- UPDATED PRINT STATEMENT ---
         print(f"YOLO segmentation model loaded: {SEGMENT_MODEL_PATH}")
     except Exception as e:
         print(f"Error loading YOLO model: {e}")
@@ -696,9 +695,36 @@ def process_mri_scan(patient_id, image_base64):
     det_conf = float(det_pred[det_idx])
 
     if det_idx == 0 or det_conf < 0.70:
+        # CRITICAL FIX: Save invalid result to database
+        invalid_message = "Invalid MRI – not a brain scan"
+        try:
+            with sqlite3.connect(DB_PATH, timeout=30) as conn:
+                c = conn.cursor()
+                c.execute("PRAGMA table_info(patient_records)")
+                columns = [col[1] for col in c.fetchall()]
+                
+                if 'segmentation_mask' in columns:
+                    c.execute('''
+                        UPDATE patient_records
+                        SET scan_result = ?, processed_image = NULL, segmentation_mask = NULL
+                        WHERE id = ?
+                    ''', (invalid_message, patient_id))
+                else:
+                    c.execute('''
+                        UPDATE patient_records
+                        SET scan_result = ?, processed_image = NULL
+                        WHERE id = ?
+                    ''', (invalid_message, patient_id))
+                conn.commit()
+        except Exception as e:
+            print(f"DB update failed for invalid MRI (patient_id={patient_id}): {e}")
+        
         return {
-            'message': 'Invalid MRI – not a brain scan',
-            'confidence': round(det_conf, 4)
+            'message': invalid_message,
+            'classification': {
+                'label': 'invalid',
+                'confidence': round(det_conf, 4)
+            }
         }, 200
 
     # ------------------------------------------------------------------
@@ -778,11 +804,8 @@ def process_mri_scan(patient_id, image_base64):
     try:
         with sqlite3.connect(DB_PATH, timeout=30) as conn:
             c = conn.cursor()
-
-            # Detect if column exists
             c.execute("PRAGMA table_info(patient_records)")
             has_mask = any(col[1] == 'segmentation_mask' for col in c.fetchall())
-
             if has_mask:
                 c.execute('''
                     UPDATE patient_records
@@ -795,10 +818,8 @@ def process_mri_scan(patient_id, image_base64):
                     SET scan_result = ?, processed_image = ?
                     WHERE id = ?
                 ''', (f"{cls_label} (Conf: {cls_conf:.2f})", final_b64, patient_id))
-
             if c.rowcount == 0:
                 return {'error': 'Patient record not found'}, 404
-
             conn.commit()
     except Exception as e:
         print(f"DB update failed (patient_id={patient_id}): {e}")

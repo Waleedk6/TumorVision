@@ -72,7 +72,6 @@ def load_models():
     except Exception as e:
         print(f"Error loading YOLO model: {e}")
 
-# Load all models at startup
 load_models()
 
 # ====================== DATABASE INIT (SAFE MIGRATION) ======================

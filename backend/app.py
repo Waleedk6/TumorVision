@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file, session # <-- Import session
+from flask import Flask, request, jsonify, send_file, session
 from flask_cors import CORS
 from auth import (
     init_db, patient_signup, doctor_signup, verify_user, signin,
@@ -10,12 +10,11 @@ from auth import (
     JWT_SECRET
 
 )
-from flask_socketio import SocketIO, join_room, leave_room, emit # <-- NEW
-import jwt # <-- NEW
+from flask_socketio import SocketIO, join_room, leave_room, emit
+import jwt
 
 import os
 import sqlite3
-# Add datetime import at the top of app.py if not already there
 import datetime
 
 app = Flask(__name__)

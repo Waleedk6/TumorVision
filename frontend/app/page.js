@@ -231,7 +231,7 @@ export default function LandingPage() {
         <Particles />
         <main style={styles.hero}>
           <h1 style={styles.title}>
-            Tumor Vision <span style={{ color: '#0070f3' }}>AI</span> (brain)
+            Tumor Vision (Brain)
           </h1>
           <p style={styles.subtitle}>
             Revolutionize patient care with <strong>secure records</strong>, <strong>verified doctors</strong>, and <strong>AI-powered MRI insights</strong> – fast, accurate, private.

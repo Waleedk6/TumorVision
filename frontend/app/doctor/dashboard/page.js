@@ -112,10 +112,7 @@ export default function DoctorDashboard() {
                 <ShieldCheck className="w-5 h-5 mr-1" /> Secure
               </div>
             </div>
-            <div className="p-4 bg-yellow-50 rounded-lg flex items-center justify-between">
-              <div className="text-lg text-gray-700 font-medium">Pending Approvals</div>
-              <div className="text-lg text-yellow-600 font-bold">0</div>
-            </div>
+            
             <div className="p-4 bg-indigo-50 rounded-lg flex items-center justify-between">
               <div className="text-lg text-gray-700 font-medium">Account Status</div>
               <div className="flex items-center text-indigo-600 font-bold">

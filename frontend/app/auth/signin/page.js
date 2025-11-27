@@ -67,7 +67,7 @@ export default function SignIn() {
         <div className="text-center mb-8">
           <LogIn className="w-10 h-10 mx-auto text-blue-600 mb-3" />
           <h2 className="text-3xl font-extrabold text-gray-900">
-            Sign In to MedScan AI
+            Sign In to Tumor Vision
           </h2>
           <p className="mt-2 text-sm text-gray-500">
             Access your secure patient records and AI tools.
@@ -142,7 +142,7 @@ export default function SignIn() {
         </form>
 
         <p className="mt-8 text-center text-sm text-gray-600">
-          New to MedScan AI?{' '}
+          New to Tumor Vision?{' '}
           <Link href="/auth/signup/select-role" className="font-semibold text-blue-600 hover:text-blue-700 transition">
             Create an account
           </Link>

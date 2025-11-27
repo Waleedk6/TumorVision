@@ -1,12 +1,13 @@
 'use client';
+
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { useAuth } from '../../../hooks/useAuth';
 import { useChat } from '../../../hooks/useChat';
 import AuthGuard from '../../../components/AuthGuard';
-import { Send, Loader2, User, CornerDownLeft, AlertCircle } from 'lucide-react';
+import { Send, Loader2, User } from 'lucide-react';
 
-// --- 1. ADD THE HELPER FUNCTION (Same as patient's page) ---
+// Helper to create deterministic room name
 const createChatRoom = (email1, email2) => {
   if (!email1 || !email2) return null;
   return [email1, email2].sort().join('_');
@@ -14,21 +15,15 @@ const createChatRoom = (email1, email2) => {
 
 export default function DoctorChatPage() {
   const params = useParams();
-  const { user } = useAuth(); // Doctor's info
+  const { user } = useAuth();
   const [newMessage, setNewMessage] = useState('');
   
   const patientEmail = params.patientEmail ? decodeURIComponent(params.patientEmail) : null;
-
-  // --- 2. CREATE THE 1-on-1 ROOM NAME ---
-  // We use the logged-in doctor's email (user.email) and the patient's email
   const room = createChatRoom(user?.email, patientEmail);
-
-  // --- 3. PASS THE CORRECT ROOM TO useChat ---
   const { messages, isConnected, loadingHistory, sendMessage } = useChat(room);
   
   const messagesEndRef = useRef(null);
 
-  // Scroll to bottom effect
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -41,20 +36,48 @@ export default function DoctorChatPage() {
     }
   };
 
+  // ✅ FIXED ChatBubble: Green for doctor's messages
   const ChatBubble = ({ msg }) => {
-    // Check if the message is from the currently logged-in doctor
     const isMe = msg.sender_email === user?.email;
-    const bubbleClass = isMe
-      ? 'bg-indigo-600 text-white self-end'
-      : 'bg-gray-200 text-gray-800 self-start';
-    // Show "Patient" or "You"
     const sender = isMe ? 'You' : 'Patient';
+
+    // Convert URLs to clickable links
+    const renderMessageWithLinks = (text) => {
+      const urlRegex = /(https?:\/\/[^\s<>"\]{}]+(?=\s|$))/g;
+      return text.split(urlRegex).map((part, index) => {
+        if (index % 2 === 1) {
+          return (
+            <a
+              key={index}
+              href={part}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 underline hover:text-blue-700"
+            >
+              {part}
+            </a>
+          );
+        }
+        return <span key={index}>{part}</span>;
+      });
+    };
 
     return (
       <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} mb-4`}>
-        <div className={`max-w-xs md:max-w-md p-3 rounded-xl shadow-md ${bubbleClass}`}>
+        <div
+          className={`
+            max-w-[calc(100vw-120px)] sm:max-w-xs md:max-w-md 
+            p-3 rounded-xl shadow-md
+            ${isMe ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-800'}
+          `}
+          style={{
+            overflowWrap: 'anywhere',
+            wordBreak: 'break-word',
+            whiteSpace: 'pre-wrap'
+          }}
+        >
           <p className="text-sm font-semibold mb-1 opacity-80">{sender}</p>
-          <p>{msg.message_text}</p>
+          <p>{renderMessageWithLinks(msg.message_text)}</p>
           <p className="text-xs opacity-60 mt-2 text-right">
             {new Date(msg.timestamp).toLocaleTimeString()}
           </p>
@@ -65,7 +88,7 @@ export default function DoctorChatPage() {
 
   return (
     <AuthGuard requiredRole="doctor">
-      <div className="flex flex-col h-[calc(100vh-80px)] bg-gray-50"> {/* Adjust height as needed */}
+      <div className="flex flex-col h-[calc(100vh-80px)] bg-gray-50">
         {/* Header */}
         <header className="bg-white p-4 border-b border-gray-200 shadow-sm z-10">
           <h2 className="text-xl font-bold text-gray-800 flex items-center">
@@ -86,14 +109,17 @@ export default function DoctorChatPage() {
               <p className="ml-2 text-gray-600">Loading chat history...</p>
             </div>
           )}
+
           {!loadingHistory && messages.length === 0 && (
             <div className="flex justify-center items-center h-full">
               <p className="text-gray-500">No messages yet. Start the conversation!</p>
             </div>
           )}
+
           {!loadingHistory && messages.map((msg) => (
             <ChatBubble key={msg.id} msg={msg} />
           ))}
+
           <div ref={messagesEndRef} />
         </div>
 
@@ -110,7 +136,7 @@ export default function DoctorChatPage() {
             />
             <button
               type="submit"
-              className="p-3 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-3 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={!isConnected || !newMessage.trim()}
             >
               <Send className="w-5 h-5" />
